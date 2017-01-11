@@ -1,0 +1,13 @@
+-- ###################################################################
+-- #                     Vorlesung Datenbanken 1                     #
+-- #                                                                 #
+-- # Projekt MI-Medienpool DDL Skript                                #
+-- #                                                                 #
+-- # Mitglieder:                                                     #
+-- # Philipp Hackh, Andreas Wark,                                    #
+-- # Karim Abdel Ghany                                               #                                                         
+-- #                                                                 #
+-- #                                                                 #
+-- ###################################################################
+
+-- Insert-Skript
