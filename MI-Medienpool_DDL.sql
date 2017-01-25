@@ -27,7 +27,6 @@ drop table benutzer;
 drop table geraete_verliehen;
 drop table reservierung;
 drop table verstoeße;
-drop table geraete_verliehen;
 
 -- Erstellung aller Tabellen, Indizes, Trigger und Contraints
 
@@ -55,7 +54,7 @@ benutzer_MatrNr INTEGER REFERENCES benutzer (benutzer_MatrNr) not null,
 geraete_id INTEGER REFERENCES geraete (geraete_id) not null
 );
 
-
+create table Inventar ();
 
 
 create table geraete_status(
@@ -105,7 +104,7 @@ CREATE OR REPLACE TRIGGER verstoeße_trigger
   referencing new as new old as old for each row
 BEGIN
   when new.verstoeße_punkte >= 10 then
-  INSERT INTO benutzer (gesperrt) VALUES ('JA')
+  INSERT INTO benutzer (gesperrt) VALUES ('Ja')
 
 END
 /
