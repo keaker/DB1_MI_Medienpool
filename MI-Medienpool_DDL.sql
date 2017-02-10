@@ -9,7 +9,7 @@
 -- Foreing Key's
 ALTER TABLE geraete_verliehen DROP CONSTRAINT benutzer_matrnr_fk;
 ALTER TABLE geraete_verliehen DROP CONSTRAINT geraete_verliehen_id_fk;
-ALTER TABLE geraete_status DROP CONSTRAINT geraete_status_id_fk;
+ALTER TABLE geraete_verfuegbar DROP CONSTRAINT geraete_verfuegbar_id_fk;
 ALTER TABLE geraete_reserviert DROP CONSTRAINT reservierung_geraete_id_fk;
 ALTER TABLE verstoesse DROP CONSTRAINT verstoesse_benutzer_matrnr_fk;
 ALTER TABLE verstoesse DROP CONSTRAINT verstossart_id_fk;
@@ -19,7 +19,7 @@ ALTER TABLE geraete_inreparatur DROP CONSTRAINT geraete_inreparatur_id_fk;
 
 -- Check 
 ALTER TABLE benutzer DROP CONSTRAINT benutzer_gesperrt_check;
-ALTER TABLE geraete_status DROP CONSTRAINT status_check;
+ALTER TABLE geraete DROP CONSTRAINT status_check;
 ALTER TABLE geraetearten DROP CONSTRAINT geraeteart_id_check;
 ALTER TABLE geraetearten DROP CONSTRAINT geraeteart_check;
 ALTER TABLE verstossarten DROP CONSTRAINT verstossarten_id_check;
@@ -35,13 +35,14 @@ ALTER TABLE geraete_inreparatur DROP CONSTRAINT reparatur_id_pk;
 
 -- Trigger
 DROP TRIGGER trg_verstoesse_insert_1;
+DROP TRIGGER trg_status_update_1;
 
 -- Loeschen aller Tabellen f�r den Restart damit keine Komplikationen auftreten
 DROP TABLE geraetearten;
 DROP TABLE geraete;
 DROP TABLE benutzer;
 DROP TABLE geraete_verliehen;
-DROP TABLE geraete_status;
+DROP TABLE geraete_verfuegbar;
 DROP TABLE geraete_reserviert;
 DROP TABLE verstossarten;
 DROP TABLE verstoesse;
@@ -57,7 +58,8 @@ CREATE TABLE geraete (
 geraete_id INTEGER GENERATED ALWAYS AS IDENTITY,
 geraeteart_id INTEGER NOT NULL,
 beschreibung VARCHAR2(300) DEFAULT 'Keine Beschreibung verfuegbar' NOT NULL,
-zubehoer VARCHAR2(300) DEFAULT 'Kein Zubehoer verfuegbar' NOT NULL
+zubehoer VARCHAR2(300) DEFAULT 'Kein Zubehoer verfuegbar' NOT NULL,
+status VARCHAR2(20) DEFAULT 'Verfuegbar' NOT NULL
 );
 
 CREATE TABLE benutzer (
@@ -67,10 +69,8 @@ benutzer_verstosspunkte INTEGER DEFAULT 0,
 gesperrt VARCHAR2(4) DEFAULT 'Nein'
 );
 
-CREATE TABLE geraete_status(
-status VARCHAR2(20) DEFAULT 'Verfuegbar',
-datum_von DATE,
-datum_bis DATE,
+CREATE TABLE geraete_verfuegbar(
+verfuegbar_id INTEGER GENERATED ALWAYS AS IDENTITY,
 geraete_id INTEGER NOT NULL
 );
 
@@ -112,7 +112,7 @@ CREATE INDEX geraete_id_index ON geraete(geraete_id);
 
 -- Check's
 ALTER TABLE benutzer ADD CONSTRAINT benutzer_gesperrt_check CHECK (gesperrt IN('Ja', 'Nein'));
-ALTER TABLE geraete_status ADD CONSTRAINT status_check CHECK (status IN ('Verfuegbar','Ausgeliehen','In Reparatur','Reserviert'));
+ALTER TABLE geraete ADD CONSTRAINT status_check CHECK (status IN ('Verfuegbar','Ausgeliehen','In Reparatur','Reserviert'));
 ALTER TABLE geraetearten ADD CONSTRAINT geraeteart_id_check CHECK (geraeteart_id IN (1, 2, 3, 4, 5));
 ALTER TABLE geraetearten ADD CONSTRAINT geraeteart_check CHECK  (geraeteart IN ('Laptop', 'Wearable', 'Smartphone', 'Tablet', 'Sonstiges'));
 ALTER TABLE verstossarten ADD CONSTRAINT verstossarten_id_check CHECK (verstossart_id IN (1 ,2 ,3));
@@ -127,8 +127,8 @@ ALTER TABLE geraete_inreparatur ADD CONSTRAINT reparatur_id_pk PRIMARY KEY (repa
 
 -- Foreign Key's
 ALTER TABLE geraete_verliehen ADD CONSTRAINT benutzer_matrnr_fk FOREIGN KEY (benutzer_matrnr) REFERENCES benutzer(benutzer_matrnr);
-ALTER TABLE geraete_verliehen ADD CONSTRAINT geraete_verliehen_id_fk FOREIGN KEY (geraete_id) REFERENCES geraetearten(geraeteart_id);
-ALTER TABLE geraete_status ADD CONSTRAINT geraete_status_id_fk FOREIGN KEY (geraete_id) REFERENCES geraete (geraete_id);
+ALTER TABLE geraete_verliehen ADD CONSTRAINT geraete_verliehen_id_fk FOREIGN KEY (geraete_id) REFERENCES geraete(geraete_id);
+ALTER TABLE geraete_verfuegbar ADD CONSTRAINT geraete_verfuegbar_id_fk FOREIGN KEY (geraete_id) REFERENCES geraete (geraete_id);
 ALTER TABLE geraete_reserviert ADD CONSTRAINT reservierung_geraete_id_fk FOREIGN KEY (geraete_id) REFERENCES geraete (geraete_id); -- ?
 ALTER TABLE verstoesse ADD CONSTRAINT verstoesse_benutzer_matrnr_fk FOREIGN KEY (benutzer_matrnr) REFERENCES benutzer (benutzer_matrnr);
 ALTER TABLE geraete ADD CONSTRAINT geraeteart_id_fk FOREIGN KEY (geraeteart_id) REFERENCES geraetearten (geraeteart_id);
@@ -166,25 +166,41 @@ END;
 
 
 
-/*CREATE OR REPLACE TRIGGER trg_benutzer_update_1
-  AFTER UPDATE OF benutzer_verstosspunkte ON benutzer
+CREATE OR REPLACE TRIGGER trg_status_update_1
+  AFTER UPDATE OF status ON geraete
   REFERENCING NEW AS NEW OLD AS OLD
   FOR EACH ROW
 DECLARE
-  b_punkte integer;
-  b_gesperrt varchar2(10);
+  g_id integer;
+  stat varchar2(20);
 BEGIN
-  SELECT benutzer_verstosspunkte
-    INTO b_punkte
-    FROM benutzer
-    WHERE benutzer_matrnr = :NEW.benutzer_matrnr;
+  SELECT status
+    INTO stat
+    FROM geraete
+    WHERE geraete_id = :NEW.geraete_id;
+  SELECT geraete_id
+    INTO g_id
+    FROM geraete
+    WHERE geraete_id = :NEW.geraete_id;
+    
+  IF (stat = 'Verfuegbar') THEN
+    INSERT INTO geraete_verfuegbar (geraete_id)
+      VALUES (g_id);
+    DElETE FROM geraete_inreparatur
+      WHERE geraete_id = :NEW.geraete_id;
+  END IF;
+  /*ELSIF (stat = 'In Reparatur') THEN
+    INSERT INTO geraete_inreparatur (geraete_id)
+    VALUES (g_id);
+  ELSIF (stat
   SELECT gesperrt
     INTO b_gesperrt
     FROM benutzer
-    WHERE benutzer_matrnr = :NEW.benutzer_matrnr;
+    WHERE benutzer_matrnr = :NEW.benutzer_matrnr;*/
   --IF (b_punkte >9) THEN
     --b_gesperrt := 'Ja';
-    UPDATE benutzer SET gesperrt = 'Ja' WHERE b_punkte > 9;
+    --UPDATE benutzer SET gesperrt = 'Ja' WHERE b_punkte > 9;
   --ENDIF;
   --benutzer.gesperrt := :NEW.b_gesperrt;
 END;
+/
