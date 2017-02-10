@@ -96,7 +96,7 @@ geraete_id INTEGER NOT NULL
 CREATE TABLE verstossarten(
 verstossart_id INTEGER, 
 verstossart_beschreibung VARCHAR2(100),
-verstossart_punkte INTEGER NOT NULL
+verstossart_punkte FLOAT NOT NULL
 );
 
 CREATE TABLE verstoesse(
@@ -117,6 +117,7 @@ ALTER TABLE geraetearten ADD CONSTRAINT geraeteart_id_check CHECK (geraeteart_id
 ALTER TABLE geraetearten ADD CONSTRAINT geraeteart_check CHECK  (geraeteart IN ('Laptop', 'Wearable', 'Smartphone', 'Tablet', 'Sonstiges'));
 ALTER TABLE verstossarten ADD CONSTRAINT verstossarten_id_check CHECK (verstossart_id IN (1 ,2 ,3));
 ALTER TABLE verstossarten ADD CONSTRAINT verstossart_beschreibung_check CHECK (verstossart_beschreibung in ('Leihdauer ueberzogen', 'Geraet defekt zurueckgebracht', 'Geraet verkratzt/beschaedigt'));
+
 -- Primary Key's
 ALTER TABLE benutzer ADD CONSTRAINT benutzer_matrnr_pk PRIMARY KEY (benutzer_matrnr);
 ALTER TABLE geraete_verliehen ADD CONSTRAINT verleih_id_pk PRIMARY KEY (verleih_id);
