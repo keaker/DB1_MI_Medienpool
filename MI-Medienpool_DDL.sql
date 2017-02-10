@@ -35,7 +35,7 @@ ALTER TABLE geraete_inreparatur DROP CONSTRAINT reparatur_id_pk;
 
 -- Trigger
 DROP TRIGGER trg_verstoesse_insert_1;
-DROP TRIGGER trg_status_update_1;
+--DROP TRIGGER trg_status_update_1;
 
 -- Loeschen aller Tabellen f�r den Restart damit keine Komplikationen auftreten
 DROP TABLE geraetearten;
@@ -109,6 +109,8 @@ benutzer_matrnr INTEGER NOT NULL
 -- Erstellung der Contraints und Indizes
 -- Indizies
 CREATE INDEX geraete_id_index ON geraete(geraete_id);
+
+
 
 -- Check's
 ALTER TABLE benutzer ADD CONSTRAINT benutzer_gesperrt_check CHECK (gesperrt IN('Ja', 'Nein'));
