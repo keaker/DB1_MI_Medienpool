@@ -92,5 +92,3 @@ INSERT INTO verstoesse (verstossart_id, benutzer_matrnr)
 VALUES (2, 32051);
 INSERT INTO verstoesse (verstossart_id, benutzer_matrnr)
 VALUES (1, 31104);
-
---select * from benutzer;
