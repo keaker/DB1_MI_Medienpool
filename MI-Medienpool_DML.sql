@@ -80,11 +80,11 @@ VALUES (32051, TO_DATE('04.02.2017', 'DD.MM.YYYY'), TO_DATE('02.03.2017', 'DD.MM
 
 -- Verstossarten Insert's
 INSERT INTO verstossarten (verstossart_id, verstossart_beschreibung, verstossart_punkte)
-VALUES (1, 'Leihdauer ueberzogen', 2);
+VALUES (1, 'Leihdauer ueberzogen', 1.5);
 INSERT INTO verstossarten (verstossart_id, verstossart_beschreibung, verstossart_punkte)
-VALUES (2, 'Geraet defekt zurueckgebracht', 5);
+VALUES (2, 'Geraet defekt zurueckgebracht', 5.0);
 INSERT INTO verstossarten (verstossart_id, verstossart_beschreibung, verstossart_punkte)
-VALUES (3, 'Geraet verkratzt/beschaedigt', 1);
+VALUES (3, 'Geraet verkratzt/beschaedigt', 1.5);
 
 -- Verstoesse Insert's
 INSERT INTO verstoesse (verstossart_id, benutzer_matrnr)
