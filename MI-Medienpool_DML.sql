@@ -54,7 +54,7 @@ VALUES ('Ausgeliehen', TO_DATE('08.02.2017', 'DD.MM.YYYY'), TO_DATE('16.02.2017'
 INSERT INTO geraete_status (status, datum_von, datum_bis, geraete_id)
 VALUES ('Ausgeliehen', TO_DATE('07.02.2017', 'DD.MM.YYYY'), TO_DATE('09.02.2017', 'DD.MM.YYYY'), 3);
 
--- Geraete_verliehen Insert's
+-- Geraete verliehen Insert's
 INSERT INTO geraete_verliehen (benutzer_matrnr, geraete_id)
 VALUES (31104, 2);
 INSERT INTO geraete_verliehen (benutzer_MatrNr, geraete_id)
@@ -62,7 +62,7 @@ VALUES (32051, 1);
 INSERT INTO geraete_verliehen (benutzer_MatrNr, geraete_id)
 VALUES (32051, 3);
 
---Geraete_inreparatur Inserts's
+-- Geraete in Reparatur Inserts's
 Insert INTO geraete_inreparatur (geraete_id)
 VALUES (7);
 INSERT INTO geraete_inreparatur (geraete_id)
@@ -70,7 +70,7 @@ VALUES (8);
 INSERT INTO geraete_inreparatur (geraete_id)
 VALUES (6);
 
--- Reservierung Insert's
+-- Geraete Reservierung Insert's
 INSERT INTO geraete_reserviert (benutzer_matrnr, reserviert_von, reserviert_bis, geraete_id)
 VALUES (31104, TO_DATE('07.02.2017', 'DD.MM.YYYY'), TO_DATE('10.02.2017', 'DD.MM.YYYY'), 4);
 INSERT INTO geraete_reserviert (benutzer_matrnr, reserviert_von, reserviert_bis, geraete_id)
@@ -78,14 +78,15 @@ VALUES (32051, TO_DATE('09.02.2017', 'DD.MM.YYYY'), TO_DATE('15.02.2017', 'DD.MM
 INSERT INTO geraete_reserviert (benutzer_matrnr, reserviert_von, reserviert_bis, geraete_id)
 VALUES (32051, TO_DATE('04.02.2017', 'DD.MM.YYYY'), TO_DATE('02.03.2017', 'DD.MM.YYYY'), 9);
 
--- verstossarten Insert's
+-- Verstossarten Insert's
 INSERT INTO verstossarten (verstossart_id, verstossart_beschreibung, verstossart_punkte)
 VALUES (1, 'Leihdauer ueberzogen', 2);
 INSERT INTO verstossarten (verstossart_id, verstossart_beschreibung, verstossart_punkte)
 VALUES (2, 'Geraet defekt zurueckgebracht', 5);
 INSERT INTO verstossarten (verstossart_id, verstossart_beschreibung, verstossart_punkte)
 VALUES (3, 'Geraet verkratzt/beschaedigt', 1);
--- verstoesse Insert's
+
+-- Verstoesse Insert's
 INSERT INTO verstoesse (verstossart_id, benutzer_matrnr)
 VALUES (1, 32051);
 INSERT INTO verstoesse (verstossart_id, benutzer_matrnr)

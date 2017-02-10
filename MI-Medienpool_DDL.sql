@@ -137,7 +137,10 @@ ALTER TABLE verstoesse ADD CONSTRAINT verstossart_id_fk FOREIGN KEY (verstossart
 ALTER TABLE geraete_reserviert ADD CONSTRAINT geraete_reserviert_matrnr_fk FOREIGN KEY (benutzer_matrnr) REFERENCES benutzer (benutzer_matrnr);
 ALTER TABLE geraete_inreparatur ADD CONSTRAINT geraete_inreparatur_id_fk FOREIGN KEY (geraete_id) REFERENCES geraete (geraete_id);
 
--- trigger testversuch
+-- Unique
+ALTER TABLE benutzer ADD UNIQUE (benutzer_name);
+
+-- Trigger
 CREATE OR REPLACE TRIGGER trg_verstoesse_insert_1
   AFTER INSERT ON verstoesse
   REFERENCING NEW AS NEW OLD AS OLD
