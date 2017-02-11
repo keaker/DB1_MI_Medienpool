@@ -35,15 +35,11 @@ ALTER TABLE geraete_inreparatur DROP CONSTRAINT reparatur_id_pk;
 
 -- Trigger
 DROP TRIGGER trg_verstoesse_insert_1;
---DROP TRIGGER trg_status_update_1;
+DROP TRIGGER trg_insert_status_1;
+DROP TRIGGER trg_insert_status_2;
+DROP TRIGGER trg_insert_status_3;
 
---drop trigger trg_update_status_hilfe;
---drop trigger trg_update_status_2;
-
-drop trigger trg_insert_status_1;
-drop trigger trg_insert_status_2;
-drop trigger trg_insert_status_3;
--- Loeschen aller Tabellen f�r den Restart damit keine Komplikationen auftreten
+-- Loeschen aller Tabellen fuer den Restart damit keine Komplikationen auftreten
 DROP TABLE geraetearten;
 DROP TABLE geraete;
 DROP TABLE benutzer;
@@ -53,9 +49,6 @@ DROP TABLE geraete_reserviert;
 DROP TABLE verstossarten;
 DROP TABLE verstoesse;
 DROP TABLE geraete_inreparatur;
-
---drop table geraete_temp;
---drop table trg_hilfe;
 
 -- Erstellung aller Tabellen, Indizes, Trigger und Contraints
 CREATE TABLE geraetearten (
@@ -116,12 +109,9 @@ verstossart_id INTEGER,
 benutzer_matrnr NUMBER(5) NOT NULL
 );
 
-
 -- Erstellung der Contraints und Indizes
 -- Indizies
 CREATE INDEX geraete_id_index ON geraete(geraete_id);
-
-
 
 -- Check's
 ALTER TABLE benutzer ADD CONSTRAINT benutzer_gesperrt_check CHECK (gesperrt IN('Ja', 'Nein'));
@@ -178,49 +168,18 @@ BEGIN
 END;
 /
 
-/*CREATE GLOBAL TEMPORARY TABLE geraete_temp (
-geraete_id INTEGER GENERATED ALWAYS AS IDENTITY,
-geraeteart_id INTEGER NOT NULL,
-beschreibung VARCHAR2(300) DEFAULT 'Keine Beschreibung verfuegbar' NOT NULL,
-zubehoer VARCHAR2(300) DEFAULT 'Kein Zubehoer verfuegbar' NOT NULL,
-status VARCHAR2(20) DEFAULT 'Verfuegbar' NOT NULL
-) ON COMMIT DELETE ROWS;
-
-CREATE OR REPLACE TRIGGER trg_copy_geraete
-  AFTER UPDATE OF status ON geraete
-  REFERENCING NEW AS NEW OLD AS OLD
-  FOR EACH ROW
-BEGIN
-  --UPDATE geraete SET status = :NEW.status WHERE geraete_id = :NEW.geraete_id;
-  INSERT INTO geraete_temp (geraete_id, geraeteart_id, beschreibung, zubehoer, status)
-  VALUES (:NEW.geraete_id, :NEW.geraeteart_id, :NEW.beschreibung, :NEW.zubehoer, :NEW.status);
-END;
-*/
 
 CREATE OR REPLACE TRIGGER trg_status_update_1
   AFTER UPDATE OF status ON geraete
   REFERENCING NEW AS NEW OLD AS OLD
   FOR EACH ROW
-DECLARE
-  --g_id integer;
-  --stat varchar2(20);
 BEGIN
-  /*SELECT status
-    INTO stat
-    FROM geraete
-    WHERE geraete_id = :NEW.geraete_id;*/
-  /*SELECT geraete_id
-    INTO g_id
-    FROM geraete
-    WHERE geraete_id = :NEW.geraete_id;*/
-    
   IF (:NEW.status = 'Verfuegbar') THEN
     INSERT INTO geraete_verfuegbar (geraete_id)
       VALUES (:NEW.geraete_id);
     DElETE FROM geraete_inreparatur
       WHERE geraete_id = :NEW.geraete_id;
   END IF;
-  
 END;
 /
 
@@ -249,54 +208,4 @@ CREATE OR REPLACE TRIGGER trg_insert_status_3
 BEGIN
   UPDATE geraete SET status = 'In Reparatur' WHERE geraete_id = :NEW.geraete_id;
 END;
-/
-/*CREATE TABLE trg_hilfe (
-  status varchar2(20));
-  
-CREATE OR REPLACE TRIGGER trg_update_status_hilfe
-  AFTER UPDATE OF status ON geraete
-  REFERENCING NEW AS NEW OLD AS OLD
-  FOR EACH ROW
-DECLARE
-  stat varchar2(20);
-BEGIN
-  SELECT status
-    INTO stat
-    FROM geraete
-    WHERE geraete_id = :NEW.geraete_id;
-  INSERT INTO trg_hilfe VALUES (stat);
-END;
-/
 
-CREATE OR REPLACE TRIGGER trg_update_status_2
-  AFTER INSERT ON trg_hilfe
-  REFERENCING NEW AS NEW OLD AS OLD
-  FOR EACH ROW
-DECLARE
-  g_id integer;
-  stat varchar2(20);
-BEGIN
-  SELECT status
-    INTO stat
-    FROM geraete
-    WHERE geraete_id = :NEW.geraete_id;
-  SELECT geraete_id
-    INTO g_id
-    FROM geraete
-    WHERE geraete_id = :NEW.geraete_id;
-    
-  IF (:NEW.status = 'Verfuegbar') THEN
-    INSERT INTO geraete_verfuegbar (geraete_id)
-      VALUES (g_id);
-    DElETE FROM geraete_inreparatur
-      WHERE geraete_id = :NEW.geraete_id;
-  END IF;
-  
-  DELETE FROM trg_hilfe;
-  
-END;
-<<<<<<< HEAD
-*/  
-=======
-/
->>>>>>> origin/master

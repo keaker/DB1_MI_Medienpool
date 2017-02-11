@@ -57,8 +57,6 @@ INSERT INTO geraete_verfuegbar (geraete_id)
 VALUES (2);
 INSERT INTO geraete_verfuegbar (geraete_id)
 VALUES (3);
-/*INSERT INTO geraete_verfuegbar (geraete_id)
-VALUES (3);*/
 
 -- Geraete verliehen Insert's
 INSERT INTO geraete_verliehen (benutzer_matrnr, verliehen_von, verliehen_bis, geraete_id)
@@ -103,7 +101,3 @@ VALUES (1, 31104);
 -- Trigger Updates
 UPDATE geraete SET status = 'Verfuegbar' 
 WHERE geraete_id = 7;
-
-select * from geraete;
-select * from geraete_verfuegbar;
-select * from geraete_inreparatur;
