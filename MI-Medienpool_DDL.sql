@@ -35,7 +35,7 @@ ALTER TABLE geraete_inreparatur DROP CONSTRAINT reparatur_id_pk;
 
 -- Trigger
 DROP TRIGGER trg_verstoesse_insert_1;
-DROP TRIGGER trg_status_update_1;
+--DROP TRIGGER trg_status_update_1;
 
 --drop trigger trg_update_status_hilfe;
 --drop trigger trg_update_status_2;
@@ -74,7 +74,7 @@ status VARCHAR2(20) DEFAULT 'Verfuegbar' NOT NULL
 CREATE TABLE benutzer (
 benutzer_matrnr NUMBER(5),
 benutzer_name VARCHAR2(60),
-benutzer_verstosspunkte INTEGER DEFAULT 0,
+benutzer_verstosspunkte FLOAT DEFAULT 0,
 gesperrt VARCHAR2(4) DEFAULT 'Nein'
 );
 
@@ -85,7 +85,9 @@ geraete_id INTEGER NOT NULL
 
 CREATE TABLE geraete_verliehen (
 verleih_id INTEGER GENERATED ALWAYS AS IDENTITY,
-benutzer_MatrNr INTEGER NOT NULL,
+benutzer_MatrNr NUMBER(5) NOT NULL,
+verliehen_von DATE NOT NULL,
+verliehen_bis DATE NOT NULL,
 geraete_id INTEGER NOT NULL
 );
 
@@ -96,7 +98,7 @@ geraete_id INTEGER
 
 CREATE TABLE geraete_reserviert (
 reservierung_id INTEGER GENERATED ALWAYS AS IDENTITY,
-benutzer_matrnr INTEGER NOT NULL,
+benutzer_matrnr NUMBER(5) NOT NULL,
 reserviert_von DATE NOT NULL,
 reserviert_bis DATE NOT NULL,
 geraete_id INTEGER NOT NULL
@@ -105,19 +107,21 @@ geraete_id INTEGER NOT NULL
 CREATE TABLE verstossarten(
 verstossart_id INTEGER, 
 verstossart_beschreibung VARCHAR2(100),
-verstossart_punkte INTEGER NOT NULL
+verstossart_punkte FLOAT NOT NULL
 );
 
 CREATE TABLE verstoesse(
 verstoesse_id INTEGER GENERATED ALWAYS AS IDENTITY,
 verstossart_id INTEGER,
-benutzer_matrnr INTEGER NOT NULL
+benutzer_matrnr NUMBER(5) NOT NULL
 );
 
 
 -- Erstellung der Contraints und Indizes
 -- Indizies
 CREATE INDEX geraete_id_index ON geraete(geraete_id);
+
+
 
 -- Check's
 ALTER TABLE benutzer ADD CONSTRAINT benutzer_gesperrt_check CHECK (gesperrt IN('Ja', 'Nein'));
@@ -126,6 +130,7 @@ ALTER TABLE geraetearten ADD CONSTRAINT geraeteart_id_check CHECK (geraeteart_id
 ALTER TABLE geraetearten ADD CONSTRAINT geraeteart_check CHECK  (geraeteart IN ('Laptop', 'Wearable', 'Smartphone', 'Tablet', 'Sonstiges'));
 ALTER TABLE verstossarten ADD CONSTRAINT verstossarten_id_check CHECK (verstossart_id IN (1 ,2 ,3));
 ALTER TABLE verstossarten ADD CONSTRAINT verstossart_beschreibung_check CHECK (verstossart_beschreibung in ('Leihdauer ueberzogen', 'Geraet defekt zurueckgebracht', 'Geraet verkratzt/beschaedigt'));
+
 -- Primary Key's
 ALTER TABLE benutzer ADD CONSTRAINT benutzer_matrnr_pk PRIMARY KEY (benutzer_matrnr);
 ALTER TABLE geraete_verliehen ADD CONSTRAINT verleih_id_pk PRIMARY KEY (verleih_id);
@@ -290,4 +295,8 @@ BEGIN
   DELETE FROM trg_hilfe;
   
 END;
+<<<<<<< HEAD
 */  
+=======
+/
+>>>>>>> origin/master
