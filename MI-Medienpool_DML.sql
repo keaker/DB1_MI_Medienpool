@@ -61,12 +61,12 @@ VALUES (3);
 VALUES (3);*/
 
 -- Geraete verliehen Insert's
-INSERT INTO geraete_verliehen (benutzer_matrnr, geraete_id)
-VALUES (31104, 4);
-INSERT INTO geraete_verliehen (benutzer_MatrNr, geraete_id)
-VALUES (32051, 5);
-INSERT INTO geraete_verliehen (benutzer_MatrNr, geraete_id)
-VALUES (32051, 6);
+INSERT INTO geraete_verliehen (benutzer_matrnr, verliehen_von, verliehen_bis, geraete_id)
+VALUES (31104, TO_DATE('11.02.2017', 'DD.MM.YYYY'), TO_DATE('28.02.2017', 'DD.MM.YYYY'), 4);
+INSERT INTO geraete_verliehen (benutzer_MatrNr, verliehen_von, verliehen_bis, geraete_id)
+VALUES (32051, TO_DATE('08.02.2017', 'DD.MM.YYYY'), TO_DATE('01.03.2017', 'DD.MM.YYYY'), 5);
+INSERT INTO geraete_verliehen (benutzer_MatrNr, verliehen_von, verliehen_bis, geraete_id)
+VALUES (32051, TO_DATE('07.02.2017', 'DD.MM.YYYY'), TO_DATE('18.02.2017', 'DD.MM.YYYY'), 6);
 
 -- Geraete in Reparatur Inserts's
 Insert INTO geraete_inreparatur (geraete_id)

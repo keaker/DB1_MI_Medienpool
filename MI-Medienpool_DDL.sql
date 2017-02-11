@@ -65,7 +65,7 @@ status VARCHAR2(20) DEFAULT 'Verfuegbar' NOT NULL
 CREATE TABLE benutzer (
 benutzer_matrnr NUMBER(5),
 benutzer_name VARCHAR2(60),
-benutzer_verstosspunkte INTEGER DEFAULT 0,
+benutzer_verstosspunkte FLOAT DEFAULT 0,
 gesperrt VARCHAR2(4) DEFAULT 'Nein'
 );
 
@@ -76,7 +76,9 @@ geraete_id INTEGER NOT NULL
 
 CREATE TABLE geraete_verliehen (
 verleih_id INTEGER GENERATED ALWAYS AS IDENTITY,
-benutzer_MatrNr INTEGER NOT NULL,
+benutzer_MatrNr NUMBER(5) NOT NULL,
+verliehen_von DATE NOT NULL,
+verliehen_bis DATE NOT NULL,
 geraete_id INTEGER NOT NULL
 );
 
@@ -87,7 +89,7 @@ geraete_id INTEGER
 
 CREATE TABLE geraete_reserviert (
 reservierung_id INTEGER GENERATED ALWAYS AS IDENTITY,
-benutzer_matrnr INTEGER NOT NULL,
+benutzer_matrnr NUMBER(5) NOT NULL,
 reserviert_von DATE NOT NULL,
 reserviert_bis DATE NOT NULL,
 geraete_id INTEGER NOT NULL
@@ -102,7 +104,7 @@ verstossart_punkte FLOAT NOT NULL
 CREATE TABLE verstoesse(
 verstoesse_id INTEGER GENERATED ALWAYS AS IDENTITY,
 verstossart_id INTEGER,
-benutzer_matrnr INTEGER NOT NULL
+benutzer_matrnr NUMBER(5) NOT NULL
 );
 
 
